@@ -1,0 +1,9 @@
+# Notification routing (read by NetcoreCDAgent)
+notifications:
+  onSuccess:
+    - devops-team@example.com
+  onRollback:
+    - devops-team@example.com
+    - on-call@example.com
+  onFailure:
+    - devops-team@example.com

@@ -1,0 +1,7 @@
+# Deployment target configuration (read by NetcoreCDAgent)
+appName: sample-api
+clusterName: aks-prod-cluster
+namespace: production
+containerName: sample-api
+podName: sample-api
+playwrightRepo: https://github.com/Komali612/sample-api-e2e.git

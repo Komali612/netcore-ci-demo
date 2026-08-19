@@ -1,0 +1,7 @@
+# PROD deployment approvers (read by NetcoreCDAgent)
+approvers:
+  - name: Release Manager
+    email: release-manager@example.com
+changeManagement:
+  system: ServiceNow
+  requiredForProd: true
