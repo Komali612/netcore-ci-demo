@@ -1,0 +1,125 @@
+name: 'NetcoreCiDemo CI Pipeline'
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  DYNATRACE_ENVIRONMENT_ID: ${{ secrets.DYNATRACE_ENVIRONMENT_ID }}
+  DYNATRACE_API_TOKEN: ${{ secrets.DYNATRACE_API_TOKEN }}
+  SPLUNK_HEC_URL: ${{ secrets.SPLUNK_HEC_URL }}
+  SPLUNK_HEC_TOKEN: ${{ secrets.SPLUNK_HEC_TOKEN }}
+  NEXUS_REPO_URL: ${{ secrets.NEXUS_REPO_URL }}
+  NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run Unit Tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+  sonarqube:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run SonarQube Analysis
+        run: |
+          echo "SonarQube coverage analysis placeholder"
+          echo "Integration with SonarQube via SONAR_HOST_URL and SONAR_TOKEN"
+
+  security:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run SAST (Fortify)
+        run: echo "SAST analysis via Fortify integration (placeholder)"
+
+      - name: Run SCA (Sonatype)
+        run: echo "SCA analysis via Sonatype integration (placeholder)"
+
+  dast:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run DAST (Fortify WebInspect)
+        run: echo 'DAST analysis via Fortify WebInspect (placeholder)'
+
+  container:
+    needs: security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker Image
+        run: echo 'Docker build and scan (placeholder)'
+      - name: Generate SBOM
+        run: echo 'SBOM generation (placeholder)'
+      - name: Push to Nexus
+        run: echo 'Push artifact to Nexus (placeholder)'
+
+  helm:
+    needs: container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Helm Chart
+        run: echo 'Update Helm chart (placeholder)'
+
+  notify:
+    needs: [build, test, sonarqube, security]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify Dynatrace
+        run: echo "Send build metrics to Dynatrace (placeholder)"
+
+      - name: Notify Splunk
+        run: echo "Send execution logs to Splunk (placeholder)"
